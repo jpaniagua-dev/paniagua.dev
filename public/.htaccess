@@ -16,29 +16,30 @@ Options -Indexes
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
+    # Canonical host. Four hosts served the same page — paniagua.dev,
+    # www.paniagua.dev, paniagua.ch and www.paniagua.ch — so search engines saw
+    # four identical sites and split ranking authority between them. The
+    # decision is settled: paniagua.dev is the brand, everything else folds
+    # into it.
+    #
+    # This runs before the HTTPS rule, and names https:// in the target rather
+    # than reusing the incoming scheme. That is what keeps it to a single hop:
+    # http://paniagua.ch lands on https://paniagua.dev directly instead of
+    # being bounced twice. A request already on the canonical host does not
+    # match here and falls through to the HTTPS rule below.
+    #
+    # A 301 is cached by browsers indefinitely. Retiring paniagua.ch this way
+    # is effectively permanent, which is the intent — but note it only affects
+    # the web. Mail on the .ch domain is untouched.
+    RewriteCond %{HTTP_HOST} !^paniagua\.dev$ [NC]
+    RewriteRule ^ https://paniagua.dev%{REQUEST_URI} [L,R=301]
+
     # Force HTTPS. The second condition prevents a redirect loop when the host
     # terminates TLS on an upstream proxy: Apache then sees plain HTTP, but
     # the X-Forwarded-Proto header says https.
     RewriteCond %{HTTPS} !=on
     RewriteCond %{HTTP:X-Forwarded-Proto} !=https
     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-
-    # --- Canonical host: ENABLE ONLY ONCE THE DOMAIN IS DECIDED --------------
-    # Four hosts currently serve the same page: paniagua.dev, www.paniagua.dev,
-    # paniagua.ch and www.paniagua.ch. Search engines see four identical sites
-    # and split ranking authority between them.
-    #
-    # The <link rel="canonical"> tag in index.html already fixes this for
-    # crawlers and can be removed in one line. The redirect below is far more
-    # permanent: browsers cache a 301 indefinitely, and it would retire
-    # paniagua.ch for good.
-    #
-    # The logo still carries the "Paniagua.ch" brand, so this decision is not
-    # settled. Once it is, uncomment both lines, swapping .dev for .ch if
-    # needed.
-    #
-    # RewriteCond %{HTTP_HOST} !^paniagua\.dev$ [NC]
-    # RewriteRule ^ https://paniagua.dev%{REQUEST_URI} [L,R=301]
 </IfModule>
 
 # ---------------------------------------------------------------------------
