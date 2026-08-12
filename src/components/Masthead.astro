@@ -1,0 +1,44 @@
+---
+import { content, pathFor, type Lang } from '../data/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const { brand, contact, otherLangLabel } = content[lang];
+const other: Lang = lang === 'en' ? 'fr' : 'en';
+---
+
+{/* A thin fixed rail rather than a navigation bar: the scroll is the
+    navigation here. The switcher is a real link to the other page, not a
+    script, so it works before any JavaScript and search engines follow it. */}
+<header class="fixed inset-x-0 top-0 z-50 bg-void/80 backdrop-blur-md">
+  <div
+    class="mx-auto flex max-w-[1600px] items-center justify-between gap-6 px-5 py-4 sm:px-8"
+  >
+    <a href={pathFor(lang)} class="field text-ink transition-colors hover:text-accent">
+      {brand.wordmark}
+    </a>
+
+    <div class="flex items-center gap-6 sm:gap-8">
+      <a
+        href={pathFor(other)}
+        hreflang={other}
+        lang={other}
+        class="field border border-rule-strong px-2 py-1 text-ink transition-colors hover:border-accent hover:text-accent"
+      >
+        {otherLangLabel}
+      </a>
+      <a
+        href={`mailto:${contact.email}`}
+        class="field text-ink transition-colors hover:text-accent"
+      >
+        {contact.cta}
+      </a>
+    </div>
+  </div>
+  <div class="h-px w-full bg-rule">
+    <div class="progress h-px w-full accent-bar"></div>
+  </div>
+</header>

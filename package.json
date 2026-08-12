@@ -1,0 +1,33 @@
+{
+  "name": "paniagua-dev",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Static site for paniagua.dev",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "deploy": "astro build && python3 deploy.py",
+    "fonts": "python3 tools/subset-fonts.py",
+    "images": "python3 tools/generate-images.py",
+    "check:glyphs": "uv run --quiet --with 'fonttools[woff]' python3 tools/check-glyphs.py",
+    "verify": "npm run build && npm run check:glyphs && npm run check:content && npm run check:overflow && npm run check:anim",
+    "shots": "python3 tools/screenshots.py",
+    "check:content": "python3 tools/check-content.py",
+    "check:overflow": "node tools/overflow-check.mjs",
+    "check:anim": "node tools/anim-check.mjs http://127.0.0.1:8787/ && node tools/anim-check.mjs http://127.0.0.1:8787/fr/",
+    "test:deploy": "uv run --quiet --with pyftpdlib --with pyopenssl python3 tools/test-deploy.py"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
+    "astro": "^7.2.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.14",
+    "playwright": "^1.62.1",
+    "sharp": "^0.34.4",
+    "tailwindcss": "^4.1.14"
+  }
+}

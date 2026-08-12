@@ -1,0 +1,43 @@
+---
+import { content, type Lang } from '../data/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const { services, servicesTitle } = content[lang];
+---
+
+{/* The label pins on the left while the six domains pass on the right. Each
+    one is a full row separated by a rule, not a card: cards would flatten the
+    order, and conception deliberately comes first. */}
+<section id="domaines" class="border-t border-rule px-5 py-24 sm:px-8 sm:py-32">
+  <div class="mx-auto grid w-full max-w-[1600px] gap-10 md:grid-cols-12 md:gap-16">
+    <div class="md:col-span-4 lg:col-span-3">
+      <div class="md:sticky md:top-28">
+        <h2 class="display text-[clamp(1.5rem,2.5vw,2.25rem)] break-words text-ink">
+          {servicesTitle}
+        </h2>
+        {/* No entry animation inside the sticky column: a pinned element
+            computes its own view timeline against its pinned position, so it
+            never finishes and sits permanently half-faded. The six rows
+            beside it carry the motion instead. */}
+        <div class="mt-6 h-[3px] w-full accent-bar"></div>
+      </div>
+    </div>
+
+    <ol class="md:col-span-8 lg:col-span-9">
+      {
+        services.map((service) => (
+          <li class="row-in border-t border-rule py-8 first:border-t-0 first:pt-0 sm:py-10">
+            <h3 class="display text-[clamp(1.5rem,3.2vw,2.75rem)] text-ink">
+              {service.name}
+            </h3>
+            <p class="mt-4 max-w-[62ch] text-dim">{service.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>

@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html
+        lang="fr"
+        class="scroll-smooth"
+>
+<head>
+    <meta charset="UTF-8">
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+    >
+    <title>Julio Paniagua | Expert Front-End & Digitalisation de Workflows à Genève</title>
+    <meta
+            name="description"
+            content="Julio Paniagua, Expert Front-End basé à Genève. Spécialiste Angular, Web Performance et Digitalisation de workflows. Dépannage urgent, Audit technique et Consulting."
+    >
+    <meta
+            name="keywords"
+            content="Expert Front-End Genève, Digitalisation workflows, Développeur Angular Suisse, Web Performance Audit, Dépannage Web Genève, Migration CMS, Consulting Technique, Julio Paniagua"
+    >
+    <meta
+            name="author"
+            content="Julio Paniagua"
+    >
+    <meta
+            name="robots"
+            content="index, follow"
+    >
+    
+    <!-- Open Graph / LinkedIn -->
+    <meta
+            property="og:type"
+            content="website"
+    >
+    <meta
+            property="og:url"
+            content="https://paniagua.dev/"
+    >
+    <meta
+            property="og:title"
+            content="Julio Paniagua | Expert Front-End & Digitalisation à Genève"
+    >
+    <meta
+            property="og:description"
+            content="J'aide les entreprises genevoises à moderniser leur web : Angular, Performance et Workflows augmentés par l'IA."
+    >
+    <meta
+            property="og:image"
+            content="https://paniagua.dev/logo.png"
+    >
+    
+    <!-- Twitter -->
+    <meta
+            property="twitter:card"
+            content="summary_large_image"
+    >
+    <meta
+            property="twitter:url"
+            content="https://paniagua.dev/"
+    >
+    <meta
+            property="twitter:title"
+            content="Julio Paniagua | Expert Front-End & Digitalisation à Genève"
+    >
+    <meta
+            property="twitter:description"
+            content="J'aide les entreprises genevoises à moderniser leur web : Angular, Performance et Workflows augmentés par l'IA."
+    >
+    <meta
+            property="twitter:image"
+            content="https://paniagua.dev/logo.png"
+    >
+    
+    <!-- Fonts -->
+    <link
+            rel="preconnect"
+            href="https://fonts.googleapis.com"
+    >
+    <link
+            rel="preconnect"
+            href="https://fonts.gstatic.com"
+            crossorigin
+    >
+    <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
+            rel="stylesheet"
+    >
+    
+    <!-- Tailwind CSS (via CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: '#0a0a0c',
+                        surface: '#18181b', // zinc-900
+                        primary: '#818cf8', // indigo-400
+                        secondary: '#c084fc', // purple-400
+                        status: '#10b981', // emerald-500
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': {opacity: '0', transform: 'translateY(20px)'},
+                            '100%': {opacity: '1', transform: 'translateY(0)'},
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom Utilities */
+        body {
+            background-color: #0a0a0c;
+            color: #e2e8f0; /* slate-200 */
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-header {
+            background: rgba(10, 10, 12, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .border-gradient {
+            position: relative;
+        }
+
+        .border-gradient::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(129, 140, 248, 0.3), rgba(192, 132, 252, 0.1));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        /* Syntax Highlighting */
+        .code-keyword {
+            color: #c084fc;
+        }
+
+        /* purple */
+        .code-func {
+            color: #818cf8;
+        }
+
+        /* indigo */
+        .code-string {
+            color: #34d399;
+        }
+
+        /* emerald */
+        .code-type {
+            color: #f472b6;
+        }
+
+        /* pink */
+        .code-comment {
+            color: #64748b;
+            font-style: italic;
+        }
+
+        /* slate */
+        .code-plain {
+            color: #e2e8f0;
+        }
+
+        /* Scroll Reveal Class */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+    
+    <!-- Schema.org JSON-LD (GEO & AI Optimization) -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "ProfessionalService",
+            "name": "Paniagua.dev",
+            "founder": {
+                "@type": "Person",
+                "name": "Julio Paniagua",
+                "jobTitle": "Expert Front-End & Digital Consultant"
+            },
+            "description": "Ingénierie Front-End avancée et digitalisation de processus métier à Genève. Expert Angular, Web Performance et Workflow Automation.",
+            "url": "https://paniagua.dev",
+            "image": "https://paniagua.dev/logo.png",
+            "areaServed": {
+                "@type": "City",
+                "name": "Genève"
+            },
+            "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Genève",
+                "addressRegion": "GE",
+                "addressCountry": "CH"
+            },
+            "priceRange": "$$$",
+            "knowsAbout": [
+                "Angular Development",
+                "Web Performance Optimization (Core Web Vitals)",
+                "CMS Migration & Security",
+                "Digital Workflow Automation",
+                "Managed Web Hosting",
+                "UI/UX Prototyping"
+            ],
+            "hasOfferCatalog": {
+                "@type": "OfferCatalog",
+                "name": "Services Techniques",
+                "itemListElement": [
+                    {
+                        "@type": "Offer",
+                        "itemOffered": {
+                            "@type": "Service",
+                            "name": "Dépannage Urgent Web"
+                        }
+                    },
+                    {
+                        "@type": "Offer",
+                        "itemOffered": {
+                            "@type": "Service",
+                            "name": "Audit Web Performance"
+                        }
+                    },
+                    {
+                        "@type": "Offer",
+                        "itemOffered": {
+                            "@type": "Service",
+                            "name": "Migration & Sécurisation"
+                        }
+                    },
+                    {
+                        "@type": "Offer",
+                        "itemOffered": {
+                            "@type": "Service",
+                            "name": "Consulting Digital & Stack Tech"
+                        }
+                    },
+                    {
+                        "@type": "Offer",
+                        "itemOffered": {
+                            "@type": "Service",
+                            "name": "Hébergement Géré & CI/CD"
+                        }
+                    },
+                    {
+                        "@type": "Offer",
+                        "itemOffered": {
+                            "@type": "Service",
+                            "name": "Prototypage UI/UX"
+                        }
+                    }
+                ]
+            }
+        }
+    </script>
+</head>
+<body>
+
+<!-- Header -->
+<header class="fixed w-full top-0 z-50 glass-header transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <!-- Logo -->
+        <a
+                href="#"
+                class="flex items-center group"
+        >
+                <span class="font-bold text-xl tracking-tight text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-indigo-400 group-hover:to-purple-400 transition-all duration-300">
+                    PANIAGUA.DEV
+                </span>
+        </a>
+        
+        <!-- Status Badge -->
+        <div class="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-xs font-medium backdrop-blur-md">
+                <span class="relative flex h-2.5 w-2.5">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                </span>
+            <span class="text-emerald-400 tracking-wide uppercase text-[10px] sm:text-xs">Expertise Ponctuelle</span>
+        </div>
+    </div>
+</header>
+
+<main class="pt-20">
+    <!-- Hero Section -->
+    <section class="min-h-[90vh] flex flex-col justify-center relative overflow-hidden">
+        <!-- Background Glows -->
+        <div class="absolute top-1/4 -left-32 w-96 h-96 bg-indigo-600/20 rounded-full blur-[128px] pointer-events-none"></div>
+        <div class="absolute bottom-1/4 -right-32 w-96 h-96 bg-purple-600/10 rounded-full blur-[128px] pointer-events-none"></div>
+        
+        <div class="max-w-7xl mx-auto px-6 w-full z-10">
+            <div class="max-w-3xl">
+                <h2 class="text-indigo-400 font-medium tracking-wider uppercase mb-4 text-sm reveal">Front-End Engineer
+                    | Angular & UI Specialist</h2>
+                <h1
+                        class="text-5xl sm:text-7xl font-bold mb-6 tracking-tight text-white reveal"
+                        style="transition-delay: 100ms;"
+                >
+                    Julio <span class="text-gradient">Paniagua</span>
+                </h1>
+                <p
+                        class="text-xl sm:text-2xl text-slate-400 leading-relaxed mb-8 max-w-2xl reveal"
+                        style="transition-delay: 200ms;"
+                >
+                    Building smart interfaces with <strong class="text-white font-semibold">AI-augmented
+                    workflows</strong>.
+                </p>
+                
+                <div
+                        class="flex flex-wrap gap-x-6 gap-y-3 mb-10 text-slate-500 text-sm sm:text-base reveal"
+                        style="transition-delay: 250ms;"
+                >
+                    <span class="flex items-center gap-2">💻 <span class="text-slate-300">Angular & Modern Web</span></span>
+                    <span class="flex items-center gap-2">🎨 <span class="text-slate-300">UI/UX Prototyping</span></span>
+                    <span class="flex items-center gap-2">🚀 <span class="text-slate-300">Web Performance</span></span>
+                </div>
+                
+                <div
+                        class="flex flex-wrap gap-4 reveal"
+                        style="transition-delay: 300ms;"
+                >
+                    <a
+                            href="mailto:contact@paniagua.dev"
+                            class="px-8 py-3 bg-white text-black font-semibold rounded-lg hover:bg-slate-200 transition-colors"
+                    >
+                        Me contacter
+                    </a>
+                    <a
+                            href="#services"
+                            class="px-8 py-3 glass-panel text-white font-medium rounded-lg hover:bg-white/10 transition-colors"
+                    >
+                        Domaines d'intervention
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Services Section -->
+    <section
+            id="services"
+            class="py-24 relative"
+    >
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-3xl font-bold text-white mb-16 text-center reveal">Domaines d'Intervention</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 1. Dépannage Urgent -->
+                <article
+                        class="glass-panel p-8 rounded-2xl border-gradient hover:transform hover:-translate-y-2 transition-all duration-300 group reveal"
+                        style="transition-delay: 100ms;"
+                >
+                    <div class="w-12 h-12 bg-red-500/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-red-500/20 transition-colors">
+                        <svg
+                                class="w-6 h-6 text-red-400"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                        >
+                            <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                            ></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Dépannage Urgent</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Intervention critique sur bugs bloquants (Angular, React, WordPress). Diagnostic rapide et
+                        correctifs robustes pour minimiser les temps d'arrêt de production.
+                    </p>
+                </article>
+                
+                <!-- 2. Audit & Web Perf -->
+                <article
+                        class="glass-panel p-8 rounded-2xl border-gradient hover:transform hover:-translate-y-2 transition-all duration-300 group reveal"
+                        style="transition-delay: 150ms;"
+                >
+                    <div class="w-12 h-12 bg-emerald-500/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-emerald-500/20 transition-colors">
+                        <svg
+                                class="w-6 h-6 text-emerald-400"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                        >
+                            <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                            ></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Audit & Web Perf</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Optimisation avancée des Core Web Vitals (LCP, CLS, INP). Analyse Lighthouse approfondie pour
+                        garantir un score de 95+ et un SEO technique irréprochable.
+                    </p>
+                </article>
+                
+                <!-- 3. Migration & Sécurisation -->
+                <article
+                        class="glass-panel p-8 rounded-2xl border-gradient hover:transform hover:-translate-y-2 transition-all duration-300 group reveal"
+                        style="transition-delay: 200ms;"
+                >
+                    <div class="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-purple-500/20 transition-colors">
+                        <svg
+                                class="w-6 h-6 text-purple-400"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                        >
+                            <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                            ></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Migration & Sécurité</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Modernisation de legacy codebases (ex: AngularJS vers Angular moderne). Sécurisation de CMS et
+                        transition vers des architectures Headless/JAMstack.
+                    </p>
+                </article>
+                
+                <!-- 4. Consulting Digital -->
+                <article
+                        class="glass-panel p-8 rounded-2xl border-gradient hover:transform hover:-translate-y-2 transition-all duration-300 group reveal"
+                        style="transition-delay: 250ms;"
+                >
+                    <div class="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-blue-500/20 transition-colors">
+                        <svg
+                                class="w-6 h-6 text-blue-400"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                        >
+                            <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                            ></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Consulting Digital</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Conseil stratégique en architecture logicielle et choix de stack technologique. Digitalisation
+                        de workflows métiers pour gagner en efficacité opérationnelle.
+                    </p>
+                </article>
+                
+                <!-- 5. Hébergement Géré -->
+                <article
+                        class="glass-panel p-8 rounded-2xl border-gradient hover:transform hover:-translate-y-2 transition-all duration-300 group reveal"
+                        style="transition-delay: 300ms;"
+                >
+                    <div class="w-12 h-12 bg-orange-500/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-orange-500/20 transition-colors">
+                        <svg
+                                class="w-6 h-6 text-orange-400"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                        >
+                            <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                            ></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Hébergement Géré</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Déploiement et maintenance d'infrastructures Web. Mise en place de pipelines CI/CD, gestion SSL
+                        et monitoring proactif 24/7.
+                    </p>
+                </article>
+                
+                <!-- 6. UI/UX Prototyping -->
+                <article
+                        class="glass-panel p-8 rounded-2xl border-gradient hover:transform hover:-translate-y-2 transition-all duration-300 group reveal"
+                        style="transition-delay: 350ms;"
+                >
+                    <div class="w-12 h-12 bg-pink-500/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-pink-500/20 transition-colors">
+                        <svg
+                                class="w-6 h-6 text-pink-400"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                        >
+                            <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
+                            ></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">UI/UX Prototyping</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Conception d'interfaces modernes et ergonomiques. Création de Design Systems scalables et
+                        prototypes interactifs haute fidélité.
+                    </p>
+                </article>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Workflow / Tech Section -->
+    <section
+            id="workflow"
+            class="py-24 bg-gradient-to-b from-transparent to-black/40"
+    >
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div class="reveal">
+                <h2 class="text-3xl font-bold text-white mb-6">Expertise Technique <br><span class="text-gradient">Ingénierie de précision</span>
+                </h2>
+                <p class="text-slate-400 mb-8 leading-relaxed">
+                    Ma méthodologie repose sur l'utilisation des outils les plus performants pour répondre aux enjeux de
+                    la digitalisation moderne. Chaque intervention est guidée par trois piliers : la performance brute,
+                    la sécurité et la maintenabilité à long terme.
+                </p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+                    <div>
+                        <h4 class="text-white font-semibold mb-2 flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                            Frameworks & Logic
+                        </h4>
+                        <p class="text-xs text-slate-500">Angular (Signals/RxJS), React, Vanilla JS ES2024+,
+                            TypeScript.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-semibold mb-2 flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            Performance
+                        </h4>
+                        <p class="text-xs text-slate-500">Core Web Vitals, SSR/SSG, Optimisation de bundle
+                            (Vite/Webpack).</p>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-semibold mb-2 flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span>
+                            Infrastructure
+                        </h4>
+                        <p class="text-xs text-slate-500">CI/CD GitHub Actions, Vercel, VPS Linux, Docker.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-semibold mb-2 flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span>
+                            UI & Design
+                        </h4>
+                        <p class="text-xs text-slate-500">Design Systems, Tailwind CSS, Figma, Accessibilité (A11y).</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Code Block Window -->
+            <div
+                    class="glass-panel rounded-xl overflow-hidden shadow-2xl shadow-indigo-500/10 border border-white/5 reveal"
+                    style="transition-delay: 200ms;"
+            >
+                <div class="flex items-center gap-2 px-4 py-3 bg-white/5 border-b border-white/5">
+                    <div class="w-3 h-3 rounded-full bg-red-500/50"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500/50"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500/50"></div>
+                    <span class="ml-2 text-xs text-slate-500 font-mono">user-profile.component.ts</span>
+                </div>
+                <div class="p-6 overflow-x-auto">
+                        <pre class="font-mono text-sm leading-relaxed"><code class="code-plain">
+<span class="code-keyword">import</span> { <span class="code-type">Component</span>, <span class="code-type">signal</span>, <span class="code-type">computed</span> } <span class="code-keyword">from</span> <span class="code-string">'@angular/core'</span>;
+
+<span class="code-type">@Component</span>({
+  <span class="code-type">selector</span>: <span class="code-string">'app-user-profile'</span>,
+  <span class="code-type">standalone</span>: <span class="code-keyword">true</span>,
+  <span class="code-type">template</span>: <span class="code-string">`
+    &lt;h1&gt;{{ fullName() }}&lt;/h1&gt;
+    &lt;span class="badge"&gt;{{ status() }}&lt;/span&gt;
+  `</span>
+})
+<span class="code-keyword">export class</span> <span class="code-type">UserProfileComponent</span> {
+  <span class="code-comment">// Modern Signal State</span>
+  <span class="code-keyword">readonly</span> firstName = <span class="code-func">signal</span>&lt;<span class="code-type">string</span>&gt;(<span class="code-string">'Julio'</span>);
+  <span class="code-keyword">readonly</span> lastName = <span class="code-func">signal</span>&lt;<span class="code-type">string</span>&gt;(<span class="code-string">'Paniagua'</span>);
+  <span class="code-keyword">readonly</span> isAvailable = <span class="code-func">signal</span>&lt;<span class="code-type">boolean</span>&gt;(<span class="code-keyword">true</span>);
+
+  <span class="code-comment">// Computed value (Derived state)</span>
+  <span class="code-keyword">readonly</span> fullName = <span class="code-func">computed</span>(() => 
+    <span class="code-string">`${this.firstName()} ${this.lastName()}`</span>
+  );
+
+  <span class="code-keyword">readonly</span> status = <span class="code-func">computed</span>(() => 
+    <span class="code-keyword">this</span>.isAvailable() ? <span class="code-string">'Available for hire'</span> : <span class="code-string">'Busy'</span>
+  );
+}
+                        </code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="border-t border-white/5 bg-black py-12">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div class="text-center md:text-left">
+            <span class="block text-white font-bold text-lg mb-1">PANIAGUA.DEVPY</span>
+            <span class="text-slate-500 text-sm">© 2026 Julio Paniagua. Tous droits réservés.</span>
+        </div>
+        
+        <div class="text-center md:text-right">
+            <p class="text-slate-400 text-sm font-medium mb-3">
+                Made with ❤️ by <span class="text-white">paniagua.dev</span>
+            </p>
+            <div class="flex items-center justify-center md:justify-end gap-6 text-slate-400">
+                <a
+                        href="https://www.linkedin.com/in/juliopaniagua"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="hover:text-white transition-colors"
+                >LinkedIn</a>
+                <a
+                        href="https://github.com/jpaniagua-dev"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="hover:text-white transition-colors"
+                >GitHub</a>
+                <a
+                        href="mailto:contact@paniagua.dev"
+                        class="hover:text-white transition-colors"
+                >Email</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<script>
+    // Intersection Observer for Scroll Animations
+    document.addEventListener('DOMContentLoaded', () => {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); // Run once
+                }
+            });
+        }, observerOptions);
+
+        const revealElements = document.querySelectorAll('.reveal');
+        revealElements.forEach(el => observer.observe(el));
+    });
+</script>
+</body>
+</html>

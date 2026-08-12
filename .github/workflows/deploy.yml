@@ -1,0 +1,114 @@
+# Build, verify and publish paniagua.dev.
+#
+# Runs on every push to main. Nothing is published unless the build and all
+# five checks pass first, so a broken page cannot reach the live site through
+# an inattentive merge.
+#
+# Deployment reuses tools already in this repository rather than a third-party
+# FTP action. Two reasons, in order of weight:
+#
+#   1. A marketplace action would receive the FTP password, which is full write
+#      access to the site. That is a supply-chain dependency this repository
+#      does not need to take on for one upload loop.
+#   2. deploy.py is the same code path used locally, so CI cannot behave
+#      differently from a manual publish. In particular it refuses to fall back
+#      to unencrypted FTP.
+
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# One deployment at a time, and never cancel one in flight: an interrupted FTP
+# session leaves the site half-updated.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Verify and publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          # check-glyphs reads the shipped woff2 files. Locally that runs
+          # through uv; here a plain pip install is one less moving part.
+          python3 -m pip install --quiet "fonttools[woff]" pyftpdlib pyopenssl
+
+      - name: Build
+        run: npm run build
+
+      - name: Check glyph coverage and dashes
+        run: python3 tools/check-glyphs.py
+
+      - name: Check no copy was invented
+        run: python3 tools/check-content.py
+
+      - name: Install browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Serve the build
+        run: |
+          npx astro preview --host 127.0.0.1 --port 8787 &
+          # Wait for the socket rather than sleeping blindly, so a failed
+          # start reports itself instead of timing out later.
+          for _ in $(seq 40); do
+            curl -sf -o /dev/null http://127.0.0.1:8787/ && break
+            sleep 0.5
+          done
+          curl -sf -o /dev/null http://127.0.0.1:8787/
+
+      - name: Check horizontal overflow
+        run: node tools/overflow-check.mjs http://127.0.0.1:8787
+
+      - name: Check scroll animations
+        run: |
+          node tools/anim-check.mjs http://127.0.0.1:8787/
+          node tools/anim-check.mjs http://127.0.0.1:8787/fr/
+
+      # The publish path itself, against a throwaway FTPS server on loopback.
+      # Two bugs reached production here before this existed, both invisible
+      # until a real connection was opened.
+      - name: Test the publish path end to end
+        run: python3 tools/test-deploy.py
+
+      # Only reached when everything above passed.
+      - name: Publish over FTPS
+        # Repository secrets are namespaced per project, since this account
+        # holds more than one site. deploy.py reads the plain names, so the
+        # mapping happens here and nowhere else.
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST_PANIAGUA_DEV }}
+          FTP_USER: ${{ secrets.FTP_USER_PANIAGUA_DEV }}
+          FTP_PASS: ${{ secrets.FTP_PASS_PANIAGUA_DEV }}
+          FTP_DIR: ${{ secrets.FTP_DIR_PANIAGUA_DEV }}
+        run: |
+          if [ -z "$FTP_HOST" ]; then
+            echo "FTP_HOST_PANIAGUA_DEV is not set. Add the repository secrets:"
+            echo "  FTP_HOST_PANIAGUA_DEV"
+            echo "  FTP_USER_PANIAGUA_DEV"
+            echo "  FTP_PASS_PANIAGUA_DEV"
+            echo "  FTP_DIR_PANIAGUA_DEV   (only if the remote root is not /)"
+            exit 1
+          fi
+          python3 deploy.py

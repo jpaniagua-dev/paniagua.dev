@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://paniagua.dev/sitemap-index.xml

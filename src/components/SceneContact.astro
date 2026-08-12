@@ -1,0 +1,78 @@
+---
+import { content, socialLinks, type Lang } from '../data/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const { contact, brand } = content[lang];
+---
+
+<section class="scene border-t border-rule px-5 py-24 sm:px-8 sm:py-32">
+  <div class="mx-auto w-full max-w-[1600px]">
+    <a
+      href={`mailto:${contact.email}`}
+      class="display swell block text-[clamp(2.5rem,11vw,10rem)] text-ink transition-colors hover:text-accent focus-visible:text-accent"
+    >
+      {contact.cta}
+    </a>
+
+    <div class="draw mt-12 h-[3px] w-full accent-bar"></div>
+
+    <div class="rise rise-2 mt-10 flex flex-wrap items-baseline justify-between gap-x-10 gap-y-6">
+      <a
+        href={`mailto:${contact.email}`}
+        class="field text-ink transition-colors hover:text-accent"
+      >
+        {contact.email}
+      </a>
+
+      <ul class="flex gap-10">
+        {
+          socialLinks.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="field transition-colors hover:text-accent"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer class="border-t border-rule px-5 py-8 sm:px-8">
+  <div
+    class="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-x-10 gap-y-3"
+  >
+    <p class="field">{contact.rights}</p>
+
+    <p class="field flex items-center gap-2">
+      {contact.madeWith}
+      {/* Drawn rather than set: neither typeface carries a heart, and pulling
+          in an icon library for one glyph would cost more than the whole
+          stylesheet. Shape from Material Symbols, Apache 2.0. */}
+      <svg
+        viewBox="0 0 24 24"
+        width="12"
+        height="12"
+        fill="currentColor"
+        role="img"
+        aria-label="love"
+        class="text-accent"
+      >
+        <path
+          d="M12 21.35 10.55 20.03C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+        ></path>
+      </svg>
+      {contact.madeBy}
+    </p>
+  </div>
+</footer>

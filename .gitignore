@@ -1,0 +1,18 @@
+# Secrets: FTP credentials read by deploy.py
+.env
+
+# Build output
+dist/
+.astro/
+node_modules/
+
+# Working files: font masters, downloaded TrueType, portrait source
+build/
+
+# Python
+__pycache__/
+*.pyc
+
+# Editors
+.idea
+.vscode

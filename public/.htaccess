@@ -1,0 +1,126 @@
+# Apache configuration for paniagua.dev
+#
+# Every block is wrapped in <IfModule>: when the host does not enable a
+# module, the directive is skipped instead of returning a 500 on the whole
+# site.
+#
+# If anything breaks after a deploy, renaming this file to .htaccess.off over
+# FTP restores the previous behaviour immediately.
+
+# No directory listing where an index file is missing
+Options -Indexes
+
+# ---------------------------------------------------------------------------
+# Redirects
+# ---------------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Force HTTPS. The second condition prevents a redirect loop when the host
+    # terminates TLS on an upstream proxy: Apache then sees plain HTTP, but
+    # the X-Forwarded-Proto header says https.
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # --- Canonical host: ENABLE ONLY ONCE THE DOMAIN IS DECIDED --------------
+    # Four hosts currently serve the same page: paniagua.dev, www.paniagua.dev,
+    # paniagua.ch and www.paniagua.ch. Search engines see four identical sites
+    # and split ranking authority between them.
+    #
+    # The <link rel="canonical"> tag in index.html already fixes this for
+    # crawlers and can be removed in one line. The redirect below is far more
+    # permanent: browsers cache a 301 indefinitely, and it would retire
+    # paniagua.ch for good.
+    #
+    # The logo still carries the "Paniagua.ch" brand, so this decision is not
+    # settled. Once it is, uncomment both lines, swapping .dev for .ch if
+    # needed.
+    #
+    # RewriteCond %{HTTP_HOST} !^paniagua\.dev$ [NC]
+    # RewriteRule ^ https://paniagua.dev%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# ---------------------------------------------------------------------------
+# Security headers
+# ---------------------------------------------------------------------------
+# Strict-Transport-Security is deliberately not set here: the host already
+# sends it (max-age=16000000). Declaring it again would duplicate the header.
+<IfModule mod_headers.c>
+    # Stop the browser from guessing a MIME type other than the declared one
+    Header always set X-Content-Type-Options "nosniff"
+
+    # Forbid embedding the site in a third-party iframe (clickjacking)
+    Header always set X-Frame-Options "DENY"
+
+    # Only send the referrer to pages of this same site
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # The site needs none of these APIs, so deny them explicitly
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+
+    # Content Security Policy. Only possible now that nothing is loaded from a
+    # third party: styles, fonts and images all come from this origin.
+    #
+    # 'unsafe-inline' is required by the inline <script> blocks and the
+    # style="transition-delay" attributes. It still blocks the main risk —
+    # loading a script from an attacker-controlled host. Replacing it with
+    # per-block hashes would be stronger, but every edit to an inline block
+    # would then silently break the page until the hash is regenerated.
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'"
+</IfModule>
+
+# ---------------------------------------------------------------------------
+# Browser cache
+# ---------------------------------------------------------------------------
+# Without these rules every visit revalidates every asset against the server.
+# HTML stays short-lived: it is what points at all the other files.
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault                          "access plus 1 week"
+    ExpiresByType text/html                 "access plus 10 minutes"
+    ExpiresByType text/css                  "access plus 1 year"
+    ExpiresByType image/png                 "access plus 1 year"
+    ExpiresByType image/webp                "access plus 1 year"
+    ExpiresByType image/x-icon              "access plus 1 month"
+    ExpiresByType font/woff2                "access plus 1 year"
+    ExpiresByType application/xml           "access plus 1 day"
+</IfModule>
+
+# Everything under /assets/ carries a content hash in its filename, so any
+# change produces a new URL. Those can be frozen for a year.
+#
+# /fonts/ is deliberately NOT in this rule. Those filenames are stable, so an
+# immutable year would leave a corrected subset unreachable for returning
+# visitors until the cache expired. A month is long enough to be free and
+# short enough to be fixable.
+<IfModule mod_headers.c>
+    SetEnvIf Request_URI "^/assets/" IMMUTABLE_ASSET
+    Header set Cache-Control "public, max-age=31536000, immutable" env=IMMUTABLE_ASSET
+
+    SetEnvIf Request_URI "^/fonts/" VERSIONLESS_ASSET
+    Header set Cache-Control "public, max-age=2592000" env=VERSIONLESS_ASSET
+</IfModule>
+
+# ---------------------------------------------------------------------------
+# Compression
+# ---------------------------------------------------------------------------
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml
+    AddOutputFilterByType DEFLATE application/xml application/json
+    AddOutputFilterByType DEFLATE image/svg+xml
+    # woff2 files are already compressed: deflating them makes them larger.
+</IfModule>
+
+# ---------------------------------------------------------------------------
+# Files that must never be served
+# ---------------------------------------------------------------------------
+# The host already blocks dot-prefixed names, but this rule costs nothing and
+# survives a change in the host's configuration.
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "\.(py|md|json|log|bak|sql)$">
+    Require all denied
+</FilesMatch>

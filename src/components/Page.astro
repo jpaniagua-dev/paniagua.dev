@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+import Masthead from './Masthead.astro';
+import ScenePerson from './ScenePerson.astro';
+import SceneServices from './SceneServices.astro';
+import SceneExpertise from './SceneExpertise.astro';
+import SceneContact from './SceneContact.astro';
+import type { Lang } from '../data/content';
+
+interface Props {
+  lang: Lang;
+}
+
+// The two language routes differ only by this prop, so a change to the page
+// structure cannot drift between them.
+const { lang } = Astro.props;
+---
+
+<Base lang={lang}>
+  <Masthead lang={lang} />
+  <main id="contenu">
+    <ScenePerson lang={lang} />
+    <SceneServices lang={lang} />
+    <SceneExpertise lang={lang} />
+    <SceneContact lang={lang} />
+  </main>
+</Base>

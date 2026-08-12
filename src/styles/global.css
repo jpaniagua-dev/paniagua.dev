@@ -1,0 +1,419 @@
+@import 'tailwindcss';
+
+/* ---------------------------------------------------------------------------
+   Typefaces, self-hosted and subset to the French character set.
+   A heavy neo-grotesque carries the brand, a monospace carries everything
+   said about it. No third weight: contrast comes from the pairing.
+   --------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: 'Switzer';
+  src: url('/fonts/switzer-900.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/jetbrains-mono-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------------------------------------------------------------------------
+   Substrate
+
+   One substrate only, and it is dark. The portrait is a low-key studio shot
+   whose blacks are clipped; on a pale page it fights the layout, on this one
+   it merges into it and only the face carries light.
+
+   Every ratio below is measured against #050506.
+   --------------------------------------------------------------------------- */
+
+:root {
+  --void: #050506;
+  --surface: #0c0c0e;
+  --ink: #f2f1ed; /* 18.0:1 */
+  --dim: #8b8b85; /* 6.0:1 */
+  /* Brand accent, a two-stop ramp used as a gradient on rules and fills, and
+     as its first stop wherever a single colour is needed. Both stops clear AA
+     on this background: 6.8:1 and 7.7:1. */
+  --accent: #818cf8;
+  --accent-2: #c084fc;
+  --accent-gradient: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+  --rule: #23231f;
+  --rule-strong: #3a3a34;
+}
+
+@theme inline {
+  --color-void: var(--void);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-dim: var(--dim);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+
+  --font-grotesk: 'Switzer', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    scroll-behavior: smooth;
+    background: var(--void);
+  }
+
+  body {
+    background: var(--void);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  * {
+    border-radius: 0 !important;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--void);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  .display {
+    font-family: var(--font-grotesk);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.045em;
+
+    /* French sets accents on capitals, and À É È need room above the cap
+       height. Below about 0.92 the accent of one line collides with the
+       line above it, which is what a tighter setting looked like here. */
+    line-height: 0.92;
+  }
+
+  .field {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--dim);
+  }
+
+  /* A rule or bar carrying the full accent ramp. Kept for structural
+     elements only: gradient behind large blocks of type reads as decoration,
+     which is the thing this palette has to avoid. */
+  .accent-bar {
+    background-image: var(--accent-gradient);
+  }
+
+  /* Type filled with the ramp. Used once, on the domain extension of the
+     wordmark: four characters, not a headline. */
+  .accent-type {
+    background-image: var(--accent-gradient);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  /* Syntax colours for the build-time highlighter. The hues are the old
+     site's, kept because they belong to this palette anyway: purple keywords,
+     indigo functions, emerald strings, pink types.
+
+     One change: comments were #64748B, which is 4.28:1 on this background and
+     misses AA. They use the page's own secondary grey instead, at 6.0:1.
+     Code that cannot be read is decoration. */
+  .code-panel {
+    --astro-code-background: transparent;
+    --astro-code-foreground: var(--ink);
+    --astro-code-token-keyword: #c084fc;
+    --astro-code-token-function: #818cf8;
+    --astro-code-token-string: #34d399;
+    --astro-code-token-string-expression: #34d399;
+    --astro-code-token-constant: #f472b6;
+    --astro-code-token-parameter: #f472b6;
+    --astro-code-token-comment: var(--dim);
+    --astro-code-token-punctuation: var(--dim);
+    --astro-code-token-link: #818cf8;
+    font-size: 12.5px;
+    line-height: 1.7;
+  }
+
+  .code-panel pre {
+    background: transparent !important;
+    margin: 0;
+  }
+
+  /* A scene occupies the viewport. The scroll is the navigation, so each one
+     has to be worth arriving at. */
+  .scene {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Scroll choreography
+
+   Driven entirely by CSS scroll-driven animations. No scroll listener, no
+   IntersectionObserver, no animation library: the compositor runs all of it
+   off the main thread, and the page still ships zero kilobytes of JavaScript.
+
+   Everything is declared inside @supports, so a browser without scroll
+   timelines shows the finished state rather than an empty page. Reduced
+   motion switches the whole system off the same way.
+   --------------------------------------------------------------------------- */
+
+@layer utilities {
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      /* Content rises into place as it enters the viewport. */
+      .rise {
+        animation: rise linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 42%;
+      }
+
+      /* Successive lines of the same block, offset by their position so a
+         paragraph assembles line by line instead of arriving as a slab. */
+      .rise-2 {
+        animation-range: entry 6% cover 50%;
+      }
+
+      .rise-3 {
+        animation-range: entry 12% cover 58%;
+      }
+
+      .rise-4 {
+        animation-range: entry 18% cover 66%;
+      }
+
+      /* The brand mark recedes as the page moves past it, handing the stage
+         to what follows rather than simply scrolling away. */
+      .recede {
+        animation: recede linear both;
+        animation-timeline: view();
+        animation-range: exit 0% exit 100%;
+      }
+
+      /* A rule that draws itself across the page. */
+      .draw {
+        animation: draw linear both;
+        animation-timeline: view();
+        animation-range: entry 4% cover 44%;
+        transform-origin: left center;
+      }
+
+      /* The portrait plate is uncovered from the bottom, the way a print is
+         pulled off the press. */
+      .wipe {
+        animation: wipe linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 45%;
+      }
+
+      /* Reading progress, pinned to the document rather than to an element. */
+      .progress {
+        animation: draw linear both;
+        animation-timeline: scroll(root block);
+        transform-origin: left center;
+      }
+
+      /* The plate drifts against the scroll. Tied to the whole time the
+         element is in view, so the movement is continuous rather than a
+         one-shot entry, and it is what gives the scene depth. */
+      .parallax {
+        animation: wipe linear both, drift linear both;
+        animation-timeline: view(), view();
+        animation-range: entry 0% cover 50%, cover 0% cover 100%;
+      }
+
+      /* Display type arrives from slightly below and slightly small, which
+         reads as settling into place rather than sliding in. */
+      .settle-type {
+        animation: settle-type linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 48%;
+      }
+
+      /* A row entering from the left. Each row carries its own timeline, so
+         the six of them cascade naturally as they cross the fold. */
+      .row-in {
+        animation: row-in linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 36%;
+      }
+
+      /* Individual words of a sentence, each on its own timeline. */
+      .word-in {
+        animation: word-in linear both;
+        animation-timeline: view();
+        animation-range: entry 4% cover 46%;
+      }
+
+      /* Something that grows into the frame. Used once, on the address. */
+      .swell {
+        animation: swell linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 58%;
+      }
+
+      /* Content that dims as it leaves, so a scene hands over instead of
+         simply scrolling out of the way. */
+      .dim-out {
+        animation: dim-out linear both;
+        animation-timeline: view();
+        animation-range: exit 20% exit 100%;
+      }
+
+      /* The band advances with the reader instead of on a timer. It moves
+         because you move, which is the only reason it is there.
+      */
+      .marquee-scroll {
+        animation: slide linear both;
+        animation-timeline: scroll(root block);
+      }
+    }
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(80px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes recede {
+    from {
+      opacity: 1;
+      transform: none;
+      filter: blur(0);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.94);
+      filter: blur(6px);
+    }
+  }
+
+  @keyframes draw {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  @keyframes drift {
+    from {
+      transform: translateY(14%);
+    }
+    to {
+      transform: translateY(-14%);
+    }
+  }
+
+  /* Display type is wiped in from the left as it rises. The clip is what
+     makes the movement unmistakable: opacity alone reads as a soft fade and
+     goes unnoticed at these sizes. */
+  @keyframes settle-type {
+    from {
+      opacity: 0;
+      transform: translateY(110px) scale(0.9);
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  @keyframes row-in {
+    from {
+      opacity: 0;
+      transform: translateX(-130px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes word-in {
+    from {
+      opacity: 0;
+      transform: translateY(56px) scale(0.86);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes swell {
+    from {
+      opacity: 0;
+      transform: scale(0.62) translateY(70px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes dim-out {
+    from {
+      opacity: 1;
+      transform: none;
+    }
+    to {
+      opacity: 0.08;
+      transform: translateY(-40px) scale(0.96);
+    }
+  }
+
+  @keyframes wipe {
+    from {
+      clip-path: inset(0 0 100% 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  /* One marquee on the page, and it stops when asked to. */
+  .marquee {
+    display: flex;
+    width: max-content;
+  }
+
+  @keyframes slide {
+    from {
+      transform: translateX(6%);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}

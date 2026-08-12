@@ -1,0 +1,89 @@
+---
+import { Code } from 'astro:components';
+import { content, type Lang } from '../data/content';
+// Imported raw: the snippet contains backticks and ${...}, which a TypeScript
+// template literal would try to interpolate. It is the file the old site
+// displayed, character for character.
+import snippet from '../data/user-profile.component.ts.txt?raw';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const { expertise, codeFilename } = content[lang];
+
+// The marquee repeats the stack twice so the loop has something to slide into.
+const marqueeItems = expertise.categories.flatMap((category) =>
+  category.body.replace(/\.$/, '').split(/,\s*/),
+);
+---
+
+<section class="border-t border-rule py-24 sm:py-32">
+  <div class="mx-auto w-full max-w-[1600px] px-5 sm:px-8">
+    <div class="grid gap-14 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-6">
+        <p class="field rise">{expertise.label}</p>
+
+        <h2 class="display settle-type mt-6 text-[clamp(2rem,5vw,4rem)] text-ink">
+          {expertise.headline}
+        </h2>
+
+        <p class="rise rise-3 mt-8 max-w-[60ch] text-[clamp(0.95rem,1.3vw,1.125rem)] leading-relaxed text-dim">
+          {expertise.body}
+        </p>
+
+        <dl class="mt-12 grid gap-x-10 gap-y-8 sm:grid-cols-2">
+          {
+            expertise.categories.map((category) => (
+              <div class="row-in">
+                <dt class="flex items-center gap-2.5 text-ink uppercase">
+                  <span class="accent-bar inline-block h-1.5 w-1.5 shrink-0" />
+                  {category.name}
+                </dt>
+                <dd class="mt-2 text-dim">{category.body}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+
+      {/* Real code, highlighted at build time, not a picture of an editor.
+          The old site framed it as a macOS window with three traffic lights;
+          those are dropped. The filename is the only chrome a code sample
+          needs, and the fake window was the one part of it that was costume. */}
+      {/* min-w-0: a grid item defaults to min-width:auto and refuses to shrink
+          below its content, so the code panel would push the page wider than
+          the viewport instead of scrolling inside its own box. */}
+      <figure class="rise rise-2 min-w-0 lg:col-span-6">
+        <figcaption
+          class="field flex items-center justify-between border border-rule border-b-0 px-4 py-3 text-ink"
+        >
+          {codeFilename}
+          <span class="accent-bar h-1.5 w-8"></span>
+        </figcaption>
+        <div class="code-panel min-w-0 overflow-x-auto border border-rule p-5 sm:p-6">
+          <Code code={snippet.trim()} lang="ts" theme="css-variables" />
+        </div>
+      </figure>
+    </div>
+  </div>
+
+  {/* Full-bleed band: the stack passing by, advancing with the reader. */}
+  <div class="mt-20 overflow-hidden border-y border-rule py-4">
+    <div class="marquee marquee-scroll">
+      {
+        [0, 1].map(() => (
+          <ul class="flex shrink-0 items-center" aria-hidden="true">
+            {marqueeItems.map((item) => (
+              <li class="field flex items-center whitespace-nowrap">
+                <span class="px-6">{item}</span>
+                <span class="accent-bar h-1 w-1"></span>
+              </li>
+            ))}
+          </ul>
+        ))
+      }
+    </div>
+  </div>
+</section>
